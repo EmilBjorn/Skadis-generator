@@ -5,6 +5,8 @@ Emil Bjørn, Bjoern.emil@gmail.com
 Feb 28th, 2024
 
 This script generates IKEA SKÅDIS design files of customizable width and length.
+
+This project uses svg.py to generate the svg code.
 """
 
 import svg
@@ -66,6 +68,5 @@ def draw() -> svg.SVG:
 
 
 canvas = draw()
-print(canvas)
 with open('output.svg', 'w', encoding='UTF-8') as file:
     file.write(str(canvas))
