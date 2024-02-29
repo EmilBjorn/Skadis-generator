@@ -98,4 +98,6 @@ pdf = fpdf.FPDF(unit="pt", format=(svg_object.width, svg_object.height))
 pdf.add_page()
 svg_object.draw_to_page(pdf)
 
-pdf.output("my_file.pdf")
+pdf_filename = f"IKEA_Skådis_{WIDTH}X{HEIGHT}_{'Landscape' if LANDSCAPE else 'Portrait'}.pdf"
+
+pdf.output(pdf_filename)
