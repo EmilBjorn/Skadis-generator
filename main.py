@@ -9,9 +9,9 @@ This script generates IKEA SKÅDIS design files of customizable width and length
 This project uses svg.py to generate the svg code.
 """
 
+import math
 import svg
 import fpdf2
-import math
 
 STRICT = True  # Trim board to preserve standard margin or not
 MARGIN = 20  # Default 20
