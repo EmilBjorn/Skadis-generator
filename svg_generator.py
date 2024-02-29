@@ -88,16 +88,17 @@ def draw() -> svg.SVG:
     )
 
 
-canvas = draw()
-with open('output.svg', 'w', encoding='UTF-8') as file:
-    file.write(str(canvas))
+if __name__ == '__main__':
+    canvas = draw()
+    with open('output.svg', 'w', encoding='UTF-8') as file:
+        file.write(str(canvas))
 
-svg_object = fpdf.svg.SVGObject.from_string(str(canvas))
+    svg_object = fpdf.svg.SVGObject.from_string(str(canvas))
 
-pdf = fpdf.FPDF(unit="pt", format=(svg_object.width, svg_object.height))
-pdf.add_page()
-svg_object.draw_to_page(pdf)
+    pdf = fpdf.FPDF(unit="pt", format=(svg_object.width, svg_object.height))
+    pdf.add_page()
+    svg_object.draw_to_page(pdf)
 
-pdf_filename = f"IKEA_Skådis_{WIDTH}X{HEIGHT}_{'Landscape' if LANDSCAPE else 'Portrait'}.pdf"
+    pdf_filename = f"IKEA_Skådis_{WIDTH}X{HEIGHT}_{'Landscape' if LANDSCAPE else 'Portrait'}.pdf"
 
-pdf.output(pdf_filename)
+    pdf.output(pdf_filename)
