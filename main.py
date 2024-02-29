@@ -9,23 +9,24 @@ This script generates IKEA SKÅDIS design files of customizable width and length
 This project uses svg.py to generate the svg code.
 """
 
-import math
 import svg
-import fpdf2
+import fpdf
 
 STRICT = True  # Trim board to preserve standard margin or not
-MARGIN = 20  # Default 20
+X_MARGIN = 20  # Default 20
+Y_MARGIN = 20  # Default 20
 GAP = 20  # Default 20
-WIDTH = 230  # Multiple of 20
+WIDTH = 200  # Multiple of 20
 HEIGHT = 500  # Multiple of 20
 STROKE = 0.02
+LANDSCAPE = True
 
 SHIFT = 20  # Default 20
 
 # Trim the sheet dimensions to multiple of 20
 if STRICT:
-    WIDTH = math.floor(WIDTH / 20) * 20
-    HEIGHT = math.floor(HEIGHT / 20) * 20
+    WIDTH = (WIDTH // 20) * 20
+    HEIGHT = (HEIGHT // 20) * 20
 
 
 def draw() -> svg.SVG:
@@ -48,12 +49,12 @@ def draw() -> svg.SVG:
 
     # Draw Pill-shapes
     do_shift = True
-    for y in range(MARGIN, HEIGHT - MARGIN + 1, GAP):
+    for y in range(Y_MARGIN, HEIGHT - Y_MARGIN + 1, GAP):
         do_shift = not do_shift
-        start_x = MARGIN
+        start_x = X_MARGIN
         if do_shift:
             start_x += SHIFT
-        for x in range(start_x, WIDTH - MARGIN + 1, GAP * 2):
+        for x in range(start_x, WIDTH - X_MARGIN + 1, GAP * 2):
             elements.append(
                 svg.Path(d=[
                     svg.M(x - 2.5, y - 5),
@@ -66,14 +67,35 @@ def draw() -> svg.SVG:
                          stroke="black",
                          fill="white"))
 
+    if LANDSCAPE:
+        group = svg.G(elements=elements,
+                      transform=[
+                          svg.Translate(0, WIDTH),
+                          svg.Rotate(-90),
+                      ])
+        W = HEIGHT
+        H = WIDTH
+    else:
+        group = svg.G(elements=elements)
+        W = WIDTH
+        H = HEIGHT
+
     return svg.SVG(
-        viewBox=svg.ViewBoxSpec(0, 0, WIDTH, HEIGHT),
-        width=str(WIDTH) + "mm",
-        height=str(HEIGHT) + "mm",
-        elements=elements,
+        viewBox=svg.ViewBoxSpec(0, 0, W, H),
+        width=str(W) + "mm",
+        height=str(H) + "mm",
+        elements=[group],
     )
 
 
 canvas = draw()
 with open('output.svg', 'w', encoding='UTF-8') as file:
     file.write(str(canvas))
+
+svg_object = fpdf.svg.SVGObject.from_string(str(canvas))
+
+pdf = fpdf.FPDF(unit="pt", format=(svg_object.width, svg_object.height))
+pdf.add_page()
+svg_object.draw_to_page(pdf)
+
+pdf.output("my_file.pdf")
