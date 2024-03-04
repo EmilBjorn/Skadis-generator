@@ -12,22 +12,6 @@ This project uses svg.py to generate the svg code.
 import svg
 import fpdf
 
-STRICT = True  # Trim board to preserve standard margin or not
-x_margin = 20  # Default 20
-y_margin = 20  # Default 20
-gap = 20  # Default 20
-WIDTH = 200  # Multiple of 20
-HEIGHT = 500  # Multiple of 20
-stroke = 0.02
-landscape = True
-
-SHIFT = 20  # Default 20
-
-# Trim the sheet dimensions to multiple of 20
-if STRICT:
-    WIDTH = (WIDTH // 20) * 20
-    HEIGHT = (HEIGHT // 20) * 20
-
 
 def draw(width,
          height,
@@ -41,7 +25,7 @@ def draw(width,
     Draws the Skådis sheet
     """
     elements: list[svg.Element] = []
-    SHIFT = 20
+    shift = 20
 
     # Trim the sheet dimensions to multiple of 20
     if trim:
@@ -66,7 +50,7 @@ def draw(width,
         do_shift = not do_shift
         start_x = x_margin
         if do_shift:
-            start_x += SHIFT
+            start_x += shift
         for x in range(start_x, width - x_margin + 1, gap * 2):
             elements.append(
                 svg.Path(d=[
@@ -102,6 +86,7 @@ if __name__ == '__main__':
 
     WIDTH = 200
     HEIGHT = 380
+    LANDSCAPE = False
 
     canvas = draw(WIDTH, HEIGHT)
     with open('output.svg', 'w', encoding='UTF-8') as file:
@@ -113,5 +98,5 @@ if __name__ == '__main__':
     pdf.add_page()
     svg_object.draw_to_page(pdf)
 
-    pdf_filename = f"IKEA_Skådis_{WIDTH}X{HEIGHT}_{'Landscape' if landscape else 'Portrait'}.pdf"
+    pdf_filename = f"IKEA_Skådis_{WIDTH}X{HEIGHT}_{'Landscape' if LANDSCAPE else 'Portrait'}.pdf"
     pdf.output(pdf_filename)
