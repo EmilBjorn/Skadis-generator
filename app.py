@@ -2,13 +2,21 @@ import streamlit as st
 import svg_generator as sg
 
 # Initialization
-landscape = False
 width = 200
-height = 500
+height = 300
 stepsize = 20
+landscape = False
+if 'numberinputwidth' not in st.session_state:
+    st.session_state.numberinputwidth = width
+if 'numberinputheight' not in st.session_state:
+    st.session_state.numberinputheight = height
+if 'sliderwidth' not in st.session_state:
+    st.session_state.sliderwidth = width
+if 'sliderheight' not in st.session_state:
+    st.session_state.sliderheight = height
+
 # Title
 st.title('IKEA Skådis SVG Generator')
-canvas = sg.draw(width, height, landscape=landscape, trim=False)
 
 
 def sliderwidth():
@@ -63,6 +71,10 @@ with col1:
                              key="numberinputheight",
                              on_change=sliderheight)
     landscape = st.toggle('Rotate file', False)
+    canvas = sg.draw(width=st.session_state.numberinputwidth,
+                     height=st.session_state.numberinputheight,
+                     landscape=landscape,
+                     trim=False)
 
     # Download Button
     st.download_button(
