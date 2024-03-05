@@ -1,9 +1,14 @@
+"""
+Streamlit app wrapper for svg_generator.py
+"""
+
 import streamlit as st
 import svg_generator as sg
 
 # Initialization
 landscape = False
 width = 200
+height = 300
 stepsize = 20
 
 # Title
